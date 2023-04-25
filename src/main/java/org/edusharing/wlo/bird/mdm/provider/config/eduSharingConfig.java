@@ -26,9 +26,8 @@ public class eduSharingConfig {
     ApiClient apiClient(){
         ApiClient apiClient = new ApiClientFixes();
         apiClient.setBasePath(basePath);
-        apiClient.addDefaultHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(String.format("%s:%s", username, password).getBytes()));
-        apiClient.addDefaultHeader("Content-Type", "application/json");
-
+        apiClient.setUsername(username);
+        apiClient.setPassword(password);
         return apiClient;
     }
 
