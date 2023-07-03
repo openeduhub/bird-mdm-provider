@@ -1,5 +1,7 @@
 package org.edusharing.wlo.bird.mdm.provider.models;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CourseLectureType {
     PRESENCE("Präsenz"),
     ONLINE_SELF_STUDY("Online (Selbstlernkurs)"),
@@ -13,6 +15,7 @@ public enum CourseLectureType {
         this.value = value;
     }
 
+    @JsonValue
     @Override
     public String toString() {
         return value;

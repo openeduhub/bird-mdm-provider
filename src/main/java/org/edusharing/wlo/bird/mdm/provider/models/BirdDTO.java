@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public record BirdDTO(
-        @JsonProperty("course_charge") CourseCharge courseCharge,
-        @JsonProperty("course_coursemode") CourseMode courseMode,
+        @JsonProperty("course_charge") I18N<CourseCharge> courseCharge,
+        @JsonProperty("course_coursemode") I18N<CourseMode> courseMode,
         @JsonProperty("course_description_long") I18N<String> courseLongDescription,
         @JsonProperty("course_description_short") I18N<String> courseShortDescription,
         @JsonProperty("course_duration") Long courseDuration,

@@ -58,7 +58,8 @@ public class EduSharingService {
                 properties.map(x -> x.get("ccm:price")).flatMap(x -> x.stream().findFirst())
                         .filter(x -> x.equals("http://w3id.org/openeduhub/vocabs/price/no"))
                         .map(x -> CourseCharge.FREE)
-                        .orElse(CourseCharge.CHARGEABLE),
+                        .map(I18N::new)
+                        .orElse(new I18N<>(CourseCharge.CHARGEABLE)),
 
                 properties.map(x -> x.get("ccm:oeh_course_coursemode"))
                         .flatMap(x -> x.stream().findFirst())
@@ -69,7 +70,9 @@ public class EduSharingService {
                                             CourseMode.SUPERVISED;
                                     default -> CourseMode.SELF_STUDY;
                                 }
-                        ).orElse(CourseMode.SELF_STUDY),
+                        )
+                        .map(I18N::new)
+                        .orElse(new I18N<>(CourseMode.SELF_STUDY)),
 
                 properties.map(x -> x.get("cclom:general_description"))
                         .flatMap(x -> x.stream().findFirst())
@@ -87,10 +90,7 @@ public class EduSharingService {
                         .map(x -> x / 1000 / 60)
                         .orElse(0L),
 
-                properties.map(x -> x.get("cclom:typicallearningtime"))
-                        .flatMap(x -> x.stream().findFirst())
-                        .map(x -> new I18N<>(CourseTimeunit.MINUTE))
-                        .orElse(null),
+                new I18N<>(CourseTimeunit.MINUTE),
 
                 properties.map(x -> x.get("cclom:general_language"))
                         .map(x -> x.stream()
