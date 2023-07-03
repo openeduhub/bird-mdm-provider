@@ -1,6 +1,7 @@
 package org.edusharing.wlo.bird.mdm.provider.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,6 +18,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class SecurityConfig {
 
+    @Value("${application.basic.auth.user}")
+    private String user;
+
+    @Value("${application.basic.auth.password}")
+    private String password;
 
     @Bean
     public PasswordEncoder encoder() { return new BCryptPasswordEncoder(); }
@@ -24,8 +30,8 @@ public class SecurityConfig {
     @Bean
     public InMemoryUserDetailsManager userDetailsManager(){
         UserDetails admin = User.builder()
-                .username("admin")
-                .password(encoder().encode("admin"))
+                .username(user)
+                .password(encoder().encode(password))
                 .roles("ADMIN")
                 .build();
 
