@@ -8,11 +8,48 @@
     <version>3.0.6</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
+
   <groupId>org.edu-sharing</groupId>
   <artifactId>edu_sharing-projects-wlo-bird-mdm-provider</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
   <name>BIRD MDM Provider</name>
   <description>BIRD MDM Provider</description>
+
+  <url>https://www.edu-sharing.com/</url>
+  <inceptionYear>2023</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License v3.0</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>metaVentis GmbH</name>
+    <url>https://www.metaventis.com/</url>
+  </organization>
+
+  <scm>
+    <connection>scm:git:https://scm.edu-sharing.com/edu-sharing/projects/wlo/ai-prompt-service.git</connection>
+    <developerConnection>scm:git:https://scm.edu-sharing.com/edu-sharing/projects/wlo/ai-prompt-service.git
+    </developerConnection>
+    <url>https://scm.edu-sharing.com/edu-sharing/projects/wlo/ai-prompt-service.git</url>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+      <id>edusharing-releases</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>edusharing-snapshots</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <properties>
     <java.version>17</java.version>
     <edu-sharing.version>8.1.0-RC7</edu-sharing.version>
@@ -31,6 +68,7 @@
   </dependencyManagement>
 
   <dependencies>
+
     <dependency>
       <groupId>org.edu_sharing</groupId>
       <artifactId>edu_sharing-community-repository-backend-services-rest-client-java</artifactId>
@@ -63,6 +101,12 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20180130</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>2.1.0</version>
     </dependency>
 
     <dependency>
@@ -106,6 +150,74 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+
+    <profile>
+      <id>docker.daemon</id>
+
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+              <execution>
+                <id>docker-Daemon</id>
+                <goals>
+                  <goal>dockerBuild</goal>
+                </goals>
+                <phase>install</phase>
+                <configuration>
+                  <to>
+                    <image>docker.edu-sharing.com/projects/wlo/bird-mdm-provider:${project.version}</image>
+                    <tags>
+                      <tag>dev</tag>
+                    </tags>
+                  </to>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>docker.deploy</id>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+              <execution>
+                <id>docker-Daemon</id>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+                <phase>deploy</phase>
+                <configuration>
+                  <to>
+                    <image>docker.edu-sharing.com/projects/wlo/ai-prompt-service:${project.version}</image>
+                  </to>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+
   <build>
     <plugins>
       <plugin>
@@ -120,28 +232,36 @@
           </excludes>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>3.3.1</version>
-        <executions>
-          <execution>
-            <id>deploy</id>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <phase>install</phase>
-            <configuration>
-              <to>
-                <image>docker.edu-sharing.com/projects/wlo/bird-mdm-provider</image>
-              </to>
-            </configuration>
-          </execution>
-        </executions>
-
-      </plugin>
     </plugins>
   </build>
 
+  <repositories>
+
+    <repository>
+      <id>edusharing-remote</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-remote/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>edusharing-mirror</id>
+      <url>https://artifacts.edu-sharing.com/repository/maven-mirror/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+
+  </repositories>
 </project>
