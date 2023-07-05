@@ -5,6 +5,8 @@ variables:
   DOCKER_TLS_CERTDIR: "$DIND_TLS_CERTDIR"
   DOCKER_USERNAME: "$DOCKER_USERNAME"
   DOCKER_PASSWORD: "$DOCKER_PASSWORD"
+  HELM_USERNAME: "$HELM_USERNAME"
+  HELM_PASSWORD: "$HELM_PASSWORD"
   MAVEN_CLI: "-Dmaven.deploy.releases=$MAVEN_DEPLOY_RELEASES -Dmaven.deploy.snapshots=$MAVEN_DEPLOY_SNAPSHOTS --batch-mode --errors --fail-fast --show-version"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
@@ -24,4 +26,4 @@ deploy:
   variables:
     ENABLE_DOCKER_DAEMON_BUILD: "false"
   script:
-    - mvn $MAVEN_CLI -s .mvn/settings.xml deploy -P docker.deploy
+    - mvn $MAVEN_CLI -s .mvn/settings.xml deploy -P docker.deploy,helm

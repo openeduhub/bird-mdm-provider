@@ -1,0 +1,18 @@
+{{- if .Values.global.cluster.istio.enabled }}
+{{- if .Capabilities.APIVersions.Has "networking.istio.io/v1beta1" }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ include "edu_sharing_projects_wlo_bird_mdm_provider.name" . }}
+  labels: {{ include "edu_sharing_projects_wlo_bird_mdm_provider.labels.app" . | nindent 4 }}
+spec:
+  host: {{ include "edu_sharing_projects_wlo_bird_mdm_provider.name" . }}
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: ISTIOCOOKIE
+          path: /
+          ttl: 0s
+{{- end }}
+{{- end }}

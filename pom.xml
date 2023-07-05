@@ -9,9 +9,9 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
-  <groupId>org.edu-sharing</groupId>
+  <groupId>org.edu_sharing</groupId>
   <artifactId>edu_sharing-projects-wlo-bird-mdm-provider</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>git</version>
 
   <name>BIRD MDM Provider</name>
   <description>BIRD MDM Provider</description>
@@ -33,10 +33,10 @@
   </organization>
 
   <scm>
-    <connection>scm:git:https://scm.edu-sharing.com/edu-sharing/projects/wlo/ai-prompt-service.git</connection>
-    <developerConnection>scm:git:https://scm.edu-sharing.com/edu-sharing/projects/wlo/ai-prompt-service.git
+    <connection>scm:git:https://scm.edu-sharing.com/edu-sharing/projects/wlo/bird-mdm-provider.git</connection>
+    <developerConnection>scm:git:https://scm.edu-sharing.com/edu-sharing/projects/wlo/bird-mdm-provider.git
     </developerConnection>
-    <url>https://scm.edu-sharing.com/edu-sharing/projects/wlo/ai-prompt-service.git</url>
+    <url>https://scm.edu-sharing.com/edu-sharing/projects/wlo/bird-mdm-provider.git</url>
   </scm>
 
   <distributionManagement>
@@ -205,9 +205,88 @@
                 <phase>deploy</phase>
                 <configuration>
                   <to>
-                    <image>docker.edu-sharing.com/projects/wlo/ai-prompt-service:${project.version}</image>
+                    <image>docker.edu-sharing.com/projects/wlo/bird-mdm-provider:${project.version}</image>
                   </to>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>helm</id>
+
+      <properties>
+        <chart.version>1.0.0</chart.version>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.kokuwa.maven</groupId>
+            <artifactId>helm-maven-plugin</artifactId>
+            <version>6.8.0</version>
+            <configuration>
+              <helmVersion>3.10.0</helmVersion>
+              <chartDirectory>src/main/chart</chartDirectory>
+              <chartVersion>${chart.version}</chartVersion>
+              <appVersion>${project.version}</appVersion>
+              <lintStrict>false</lintStrict>
+              <addDefaultRepo>false</addDefaultRepo>
+              <uploadRepoStable>
+                <url>https://artifacts.edu-sharing.com/repository/helm/</url>
+                <type>NEXUS</type>
+                <!--suppress UnresolvedMavenProperty -->
+                <username>${env.HELM_USERNAME}</username>
+                <!--suppress UnresolvedMavenProperty -->
+                <password>${env.HELM_PASSWORD}</password>
+              </uploadRepoStable>
+              <uploadRepoSnapshot>
+                <url>https://artifacts.edu-sharing.com/repository/helm/</url>
+                <type>NEXUS</type>
+                <!--suppress UnresolvedMavenProperty -->
+                <username>${env.HELM_USERNAME}</username>
+                <!--suppress UnresolvedMavenProperty -->
+                <password>${env.HELM_PASSWORD}</password>
+              </uploadRepoSnapshot>
+            </configuration>
+            <executions>
+              <execution>
+                <id>init</id>
+                <goals>
+                  <goal>init</goal>
+                </goals>
+                <phase>initialize</phase>
+              </execution>
+              <execution>
+                <id>dependency-build</id>
+                <goals>
+                  <goal>dependency-build</goal>
+                </goals>
+                <phase>compile</phase>
+              </execution>
+              <execution>
+                <id>lint</id>
+                <goals>
+                  <goal>lint</goal>
+                </goals>
+                <phase>test</phase>
+              </execution>
+              <execution>
+                <id>package</id>
+                <goals>
+                  <goal>package</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+              <execution>
+                <id>upload</id>
+                <goals>
+                  <goal>upload</goal>
+                </goals>
+                <phase>deploy</phase>
               </execution>
             </executions>
           </plugin>
