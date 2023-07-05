@@ -44,7 +44,7 @@ public class SecurityConfig {
                 //.csrf().disable()
                 //.cors().and()
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/actuator").permitAll()
+                        .requestMatchers("/actuator/health/*").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(withDefaults());
         return http.build();
