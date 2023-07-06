@@ -77,12 +77,12 @@ public class EduSharingService {
                 properties.map(x -> x.get("cclom:general_description"))
                         .flatMap(x -> x.stream().findFirst())
                         .map(I18N::new)
-                        .orElse(new I18N<>("")),
+                        .orElse(new I18N<>("tbd.")),
 
                 properties.map(x -> x.get("ccm:oeh_course_description_short"))
                         .flatMap(x -> x.stream().findFirst())
                         .map(I18N::new)
-                        .orElse(new I18N<>("")),
+                        .orElse(new I18N<>("tbd.")),
 
                 properties.map(x -> x.get("cclom:typicallearningtime"))
                         .flatMap(x -> x.stream().findFirst())
@@ -100,7 +100,7 @@ public class EduSharingService {
                                         return CourseLanguage.valueOf(y);
                                     } catch (IllegalArgumentException ex) {
                                         log.warn("Illegale course language {}! Values must be of {}", y, CourseLanguage.values());
-                                        return null;
+                                        return CourseLanguage.DE;
                                     }
                                 })
                                 .toList())
@@ -120,7 +120,7 @@ public class EduSharingService {
                                             CourseLectureType.ONLINE_FIXED_GROUP_APPOINTMENTS;
                                     case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/learningFormat/mooc.html" ->
                                             CourseLectureType.MASSIVE_OPEN_ONLINE_COURSE;
-                                    default -> null;
+                                    default -> CourseLectureType.ONLINE_SELF_STUDY;
                                 })
                                 .filter(Objects::nonNull)
                                 .toList())
@@ -134,13 +134,13 @@ public class EduSharingService {
                 properties.map(x -> x.get("ccm:oeh_course_serviceprovider_url_image"))
                         .flatMap(x -> x.stream().findFirst())
                         .map(I18N::new)
-                        .orElse(new I18N<>("")),
+                        .orElse(new I18N<>("tbd.")),
 
 
                 properties.map(x -> x.get("cclom:location"))
                         .flatMap(x -> x.stream().findFirst())
                         .map(I18N::new)
-                        .orElse(new I18N<>("")),
+                        .orElse(new I18N<>("tbd.")),
 
 
                 properties.map(x -> x.get("ccm:oeh_course_targetgroup"))
@@ -160,14 +160,14 @@ public class EduSharingService {
                                             CourseTarget.TEACHER;
                                     case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/intendedEndUserRole_BIRD/parent.html" ->
                                             CourseTarget.PARENTS;
-                                    default -> null;
+                                    default -> CourseTarget.STUDENTS;
                                 })
                                 .filter(Objects::nonNull)
                                 .toList())
                         .map(I18N::new)
                         .orElse(new I18N<>(new ArrayList<>())),
 
-                new I18N<>(Optional.of(node).map(Node::getTitle).orElse("")),
+                new I18N<>(Optional.of(node).map(Node::getTitle).orElse("tbd.")),
 
                 properties.map(x -> x.get("ccm:oeh_lrt"))
                         .map(x -> x.stream()
@@ -175,7 +175,7 @@ public class EduSharingService {
                                     case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/new_lrt/8d5195dd-2e48-44d4-a9c1-6bccbf85ec96.html" ->
                                             CourseType.LANGUAGE_COURSE;
                                     case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/new_lrt/8e157383-9ca3-4e20-849d-0881b648fd99.html" ->
-                                            CourseType.CAREER_SKILLS;
+                                            CourseType.SPECIALIST_COURSE;
                                     case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/new_lrt/ff20ae9f-5d83-4f29-ba4f-993cbd743e5c.html" ->
                                             CourseType.PROPAEDEUTICS;
                                     case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/new_lrt/89abe72e-d4c6-4797-ac36-175cfce25107.html" ->
@@ -188,14 +188,14 @@ public class EduSharingService {
                                             CourseType.ACADEMIC_SKILLS;
                                     case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/new_lrt/9ac858a9-fc06-41a1-a18e-faf7a1525198.html" ->
                                             CourseType.CAREER_SKILLS;
-                                    default -> null;
+                                    default -> CourseType.SPECIALIST_COURSE;
                                 })
                                 .filter(Objects::nonNull)
                                 .toList())
                         .map(I18N::new)
                         .orElse(new I18N<>(new ArrayList<>())),
 
-                new I18N<>(Optional.of(node).map(Node::getPreview).map(Preview::getUrl).orElse(""))
+                new I18N<>(Optional.of(node).map(Node::getPreview).map(Preview::getUrl).orElse("tbd."))
         );
     }
 }
