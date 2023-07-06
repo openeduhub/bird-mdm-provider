@@ -103,6 +103,7 @@ public class EduSharingService {
                                         return null;
                                     }
                                 })
+                                .filter(Objects::nonNull)
                                 .toList())
                         .map(x->x.isEmpty() ? null : x)
                         .map(I18N::new)
