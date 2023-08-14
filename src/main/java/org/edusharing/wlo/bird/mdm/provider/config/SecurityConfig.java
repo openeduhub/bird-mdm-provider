@@ -45,6 +45,7 @@ public class SecurityConfig {
                 //.cors().and()
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/actuator/health/*").permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(withDefaults());
         return http.build();
