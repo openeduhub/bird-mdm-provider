@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: "metrics"
 spec:
   endpoints:
-  - path: "/metrics"
+  - path: "/actuator/prometheus"
     port: http-management
     interval: {{ .Values.global.metrics.scrape.interval }}
     scrapeTimeout: {{ .Values.global.metrics.scrape.timeout }}
