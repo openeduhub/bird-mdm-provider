@@ -46,6 +46,7 @@ public class EduSharingService {
     public List<BirdDTO> getCourses() throws ApiException {
         List<BirdDTO> data = new ArrayList<>();
         Pagination pagination;
+        int count = 0;
         do {
             NodeEntries children = nodeV1Api.getChildren("-home-", collectionId, 500, data.size(), null, null, null, null, properties);
             List<BirdDTO> birdData = children.getNodes().stream()
@@ -54,7 +55,8 @@ public class EduSharingService {
                     .toList();
             data.addAll(birdData);
             pagination = children.getPagination();
-        } while (data.size() < pagination.getTotal());
+            count += pagination.getCount();
+        } while (count < pagination.getTotal());
         return data;
     }
 
