@@ -86,7 +86,7 @@ public class EduSharingService {
                     properties.map(x -> x.get("cclom:general_description"))
                             .flatMap(x -> x.stream().findFirst())
                             .map(I18N::new)
-                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description")),
+                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description (long) ")),
 
                     properties.map(x -> x.get("cclom:general_description"))
                             .flatMap(x -> x.stream().findFirst())
@@ -100,7 +100,7 @@ public class EduSharingService {
                                 return x;
                             })
                             .map(I18N::new)
-                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description")),
+                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description (short)")),
 
                     0L,
 
@@ -225,7 +225,7 @@ public class EduSharingService {
                     //new I18N<>(Optional.of(node).map(Node::getPreview).map(Preview::getUrl).orElse("tbd."))
                     null
             );
-        }catch (NoSuchElementException ex){
+        } catch (NoSuchElementException ex) {
             log.warn("Node {} cause of: {}", node.getRef().getId(), ex.getMessage());
             return null;
         }
