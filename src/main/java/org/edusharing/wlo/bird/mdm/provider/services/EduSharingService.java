@@ -84,7 +84,7 @@ public class EduSharingService {
                     properties.map(x -> x.get("cclom:general_description"))
                             .flatMap(x -> x.stream().findFirst())
                             .map(I18N::new)
-                            .orElseThrow(),
+                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description")),
 
                     properties.map(x -> x.get("cclom:general_description"))
                             .flatMap(x -> x.stream().findFirst())
@@ -98,7 +98,7 @@ public class EduSharingService {
                                 return x;
                             })
                             .map(I18N::new)
-                            .orElse(new I18N<>("tbd.")),
+                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description")),
 
                     0L,
 
@@ -112,7 +112,7 @@ public class EduSharingService {
                                     .toList())
                             .map(x -> x.isEmpty() ? null : x)
                             .map(I18N::new)
-                            .orElseThrow(),
+                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_language")),
 
 // Bad database for on OERSI so we use CourseLectureType.ONLINE_SELF_STUDY only
 //                properties.map(x -> x.get("ccm:oeh_course_lecture_type"))
@@ -144,7 +144,7 @@ public class EduSharingService {
                             .map(x -> Ezvcard.parse(x).first())
                             .flatMap(x -> x.getOrganization().getValues().stream().findFirst())
                             .map(I18N::new)
-                            .orElseThrow(),
+                            .orElseThrow(() -> new NoSuchElementException("Missing ccm:lifecyclecontributer_publisher.ORG")),
 
 
 // Bad database of OERSI so we use null only
@@ -157,7 +157,7 @@ public class EduSharingService {
                     properties.map(x -> x.get("cclom:location"))
                             .flatMap(x -> x.stream().findFirst())
                             .map(I18N::new)
-                            .orElseThrow(),
+                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:location")),
 
 // Bad database of OERSI so we use CourseTarget.STUDENTS only
 //                properties.map(x -> x.get("ccm:oeh_course_targetgroup"))
@@ -186,7 +186,9 @@ public class EduSharingService {
 //                        .orElse(new I18N<>(Collections.singletonList(CourseTarget.STUDENTS))),
                     new I18N<>(Collections.singletonList(CourseTarget.STUDENTS)),
 
-                    new I18N<>(Optional.of(node).map(Node::getTitle).orElseThrow()),
+                    new I18N<>(Optional.of(node)
+                            .map(Node::getTitle)
+                            .orElseThrow(() -> new NoSuchElementException("Missing cclom:title"))),
 
 // Bad database of OERSI so we use CourseType.SPECIALIST_COURSE only
 //                properties.map(x -> x.get("ccm:oeh_lrt"))
@@ -222,7 +224,7 @@ public class EduSharingService {
                     null
             );
         }catch (NoSuchElementException ex){
-            log.warn("Node {}", node.getRef().getId(), ex);
+            log.warn("Node {} cause of: {}", node.getRef().getId(), ex.getMessage());
             return null;
         }
     }
