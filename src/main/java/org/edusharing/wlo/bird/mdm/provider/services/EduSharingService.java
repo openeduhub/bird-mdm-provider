@@ -26,18 +26,21 @@ public class EduSharingService {
     @Value("${edu.sharing.course.id}")
     private String collectionId;
 
+
+    public static final String CCM_PRICE = "ccm:price";
+    public static final String CCM_OEH_COURSE_COURSEMODE = "ccm:oeh_course_coursemode";
+    public static final String CCLOM_GENERAL_DESCRIPTION = "cclom:general_description";
+    public static final String CCLOM_GENERAL_LANGUAGE = "cclom:general_language";
+    public static final String CCLOM_LOCATION = "cclom:location";
+    public static final String CCM_LIFECYCLECONTRIBUTER_PUBLISHER = "ccm:lifecyclecontributer_publisher";
+
     private static final List<String> properties = Arrays.asList(
-            "ccm:price",
-            "ccm:oeh_course_coursemode",
-            "cclom:general_description",
-            "ccm:oeh_course_description_short",
-            "cclom:typicallearningtime",
-            "cclom:general_language",
-            "ccm:oeh_course_lecture_type",
-            "ccm:oeh_course_serviceprovider_url_image",
-            "cclom:location",
-            "ccm:oeh_course_targetgroup",
-            "ccm:oeh_lrt"
+            CCM_PRICE,
+            CCM_OEH_COURSE_COURSEMODE,
+            CCLOM_GENERAL_DESCRIPTION,
+            CCLOM_GENERAL_LANGUAGE,
+            CCLOM_LOCATION,
+            CCM_LIFECYCLECONTRIBUTER_PUBLISHER
     );
 
     private static final String HTML_PATTERN = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
@@ -64,13 +67,13 @@ public class EduSharingService {
         Optional<Map<String, List<String>>> properties = Optional.ofNullable(node.getProperties());
         try {
             return new BirdDTO(
-                    properties.map(x -> x.get("ccm:price")).flatMap(x -> x.stream().findFirst())
+                    properties.map(x -> x.get(CCM_PRICE)).flatMap(x -> x.stream().findFirst())
                             .filter(x -> x.equals("http://w3id.org/openeduhub/vocabs/price/no"))
                             .map(x -> CourseCharge.FREE)
                             .map(I18N::new)
                             .orElse(null),
 
-                    properties.map(x -> x.get("ccm:oeh_course_coursemode"))
+                    properties.map(x -> x.get(CCM_OEH_COURSE_COURSEMODE))
                             .flatMap(x -> x.stream().findFirst())
                             .map(x -> switch (x) {
                                         case "https://vocabs.openeduhub.de/w3id.org/openeduhub/vocabs/learningMode/selfPaced.html" ->
@@ -83,12 +86,12 @@ public class EduSharingService {
                             .map(I18N::new)
                             .orElse(null),
 
-                    properties.map(x -> x.get("cclom:general_description"))
+                    properties.map(x -> x.get(CCLOM_GENERAL_DESCRIPTION))
                             .flatMap(x -> x.stream().findFirst())
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description (long) ")),
 
-                    properties.map(x -> x.get("cclom:general_description"))
+                    properties.map(x -> x.get(CCLOM_GENERAL_DESCRIPTION))
                             .flatMap(x -> x.stream().findFirst())
                             .map(x -> {
                                 try {
@@ -106,7 +109,7 @@ public class EduSharingService {
 
                     new I18N<>(CourseTimeunit.MINUTE),
 
-                    properties.map(x -> x.get("cclom:general_language"))
+                    properties.map(x -> x.get(CCLOM_GENERAL_LANGUAGE))
                             .map(x -> x.stream()
                                     .map(String::toLowerCase)
                                     .map(CourseLanguage::fromString)
@@ -141,7 +144,7 @@ public class EduSharingService {
                     node.getRef().getId(),
 
 //                new I18N<>("WLO"),
-                    properties.map(x -> x.get("ccm:lifecyclecontributer_publisher"))
+                    properties.map(x -> x.get(CCM_LIFECYCLECONTRIBUTER_PUBLISHER))
                             .flatMap(x -> x.stream().findFirst())
                             .map(x -> Ezvcard.parse(x).first())
                             .flatMap(x -> x.getOrganization().getValues().stream().findFirst())
@@ -156,7 +159,7 @@ public class EduSharingService {
 //                        .orElse(new I18N<>("tbd.")),
                     null,
 
-                    properties.map(x -> x.get("cclom:location"))
+                    properties.map(x -> x.get(CCLOM_LOCATION))
                             .flatMap(x -> x.stream().findFirst())
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing cclom:location")),
