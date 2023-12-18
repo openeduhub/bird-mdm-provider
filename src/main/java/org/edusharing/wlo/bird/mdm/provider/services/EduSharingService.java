@@ -51,7 +51,7 @@ public class EduSharingService {
         Pagination pagination;
         int count = 0;
         do {
-            NodeEntries children = nodeV1Api.getChildren("-home-", collectionId, 500, data.size(), null, null, null, null, properties);
+            NodeEntries children = nodeV1Api.getChildren("-home-", collectionId, 100, data.size(), null, null, null, null, properties);
             List<BirdDTO> birdData = children.getNodes().stream()
                     .map(this::map)
                     .filter(Objects::nonNull)
@@ -59,6 +59,7 @@ public class EduSharingService {
             data.addAll(birdData);
             pagination = children.getPagination();
             count += pagination.getCount();
+            log.info("processed: {} of {} nodes", count, pagination.getTotal());
         } while (count < pagination.getTotal());
         return data;
     }
