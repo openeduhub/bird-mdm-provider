@@ -1,6 +1,8 @@
 package org.edusharing.wlo.bird.mdm.provider.services;
 
 import ezvcard.Ezvcard;
+import ezvcard.VCard;
+import ezvcard.property.ListProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.edu_sharing.generated.repository.backend.services.rest.client.ApiException;
@@ -148,7 +150,9 @@ public class EduSharingService {
                     properties.map(x -> x.get(CCM_LIFECYCLECONTRIBUTER_PUBLISHER))
                             .flatMap(x -> x.stream().findFirst())
                             .map(x -> Ezvcard.parse(x).first())
-                            .flatMap(x -> x.getOrganization().getValues().stream().findFirst())
+                            .map(VCard::getOrganization)
+                            .map(ListProperty::getValues)
+                            .flatMap(x -> x.stream().findFirst())
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing ccm:lifecyclecontributer_publisher.ORG")),
 
