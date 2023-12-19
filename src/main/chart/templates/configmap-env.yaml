@@ -4,7 +4,7 @@ metadata:
   name: {{ include "edu_sharing_projects_wlo_bird_mdm_provider.name" . }}-env
   labels: {{ include "edu_sharing_projects_wlo_bird_mdm_provider.labels.app" . | nindent 4 }}
 data:
-  APPLICATION_CACHE_TTL: "{{ .Values.config.service.cache.ttl }}"
+  APPLICATION_CACHE_TTL: "{{ .Values.service.cache.ttl }}"
   EDU_SHARING_BASEPATH: "{{ .Values.config.repository.basepath }}"
   EDU_SHARING_COURSE_ID: "{{ .Values.config.repository.collection }}"
   EDU_SHARING_READTIMEOUT: "{{ .Values.config.repository.timeout }}"
