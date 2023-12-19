@@ -22,9 +22,12 @@ public class eduSharingConfig {
     @Value("${edu.sharing.password}")
     public String password;
 
+    @Value("${edu.sharing.readtimeout}")
+    public int readTimeout;
     @Bean
     ApiClient apiClient(){
         ApiClient apiClient = new ApiClientFixes();
+        apiClient.setReadTimeout(readTimeout);
         apiClient.setBasePath(basePath);
         apiClient.setUsername(username);
         apiClient.setPassword(password);
