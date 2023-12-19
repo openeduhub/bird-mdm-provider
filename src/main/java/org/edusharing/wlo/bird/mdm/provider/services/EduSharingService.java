@@ -48,23 +48,22 @@ public class EduSharingService {
     private static final String HTML_PATTERN = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
     private static final Pattern htmlPattern = Pattern.compile(HTML_PATTERN);
 
-    public Paged<BirdDTO> getCourses(int page, int size) throws ApiException {
+    public List<BirdDTO> getCourses() throws ApiException {
         List<BirdDTO> data = new ArrayList<>();
-        //Pagination pagination;
-        //int count = 0;
-        //do {
-        NodeEntries children = nodeV1Api.getChildren("-home-", collectionId, (page + 1) * size, size, null, null, null, null, properties);
-        List<BirdDTO> birdData = children.getNodes().stream()
-                .map(this::map)
-                .filter(Objects::nonNull)
-                .toList();
-        data.addAll(birdData);
-        Pagination pagination = children.getPagination();
-        //count += pagination.getCount();
-        //log.info("processed: {} of {} nodes", count, pagination.getTotal());
-        //} while (count < pagination.getTotal());
-
-        return new Paged<>(data, pagination.getCount(), pagination.getTotal());
+        Pagination pagination;
+        int count = 0;
+        do {
+            NodeEntries children = nodeV1Api.getChildren("-home-", collectionId, 500, count, null, null, null, null, properties);
+            List<BirdDTO> birdData = children.getNodes().stream()
+                    .map(this::map)
+                    .filter(Objects::nonNull)
+                    .toList();
+            data.addAll(birdData);
+            pagination = children.getPagination();
+            count += pagination.getCount();
+            log.info("processed: {} of {} nodes", count, pagination.getTotal());
+        } while (count < pagination.getTotal());
+        return data;
     }
 
     private BirdDTO map(Node node) {
