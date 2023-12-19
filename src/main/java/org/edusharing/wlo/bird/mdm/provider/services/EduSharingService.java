@@ -12,9 +12,13 @@ import org.edu_sharing.generated.repository.backend.services.rest.client.model.N
 import org.edu_sharing.generated.repository.backend.services.rest.client.model.Pagination;
 import org.edusharing.wlo.bird.mdm.provider.models.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 
@@ -23,6 +27,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class EduSharingService {
 
+    public static final String CACHE_COURSES = "courses";
     private final NodeV1Api nodeV1Api;
 
     @Value("${edu.sharing.course.id}")
@@ -48,6 +53,7 @@ public class EduSharingService {
     private static final String HTML_PATTERN = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
     private static final Pattern htmlPattern = Pattern.compile(HTML_PATTERN);
 
+    @Cacheable(CACHE_COURSES)
     public List<BirdDTO> getCourses() throws ApiException {
         List<BirdDTO> data = new ArrayList<>();
         Pagination pagination;
@@ -64,6 +70,12 @@ public class EduSharingService {
             log.info("processed: {} of {} nodes", count, pagination.getTotal());
         } while (count < pagination.getTotal());
         return data;
+    }
+
+    @Scheduled(fixedDelayString = "${application.cache.ttl}", initialDelayString = "${application.cache.ttl}", timeUnit = TimeUnit.SECONDS)
+    @CacheEvict(value = CACHE_COURSES, allEntries = true)
+    public void evictCache() {
+        log.info("evict {} cache", CACHE_COURSES);
     }
 
     private BirdDTO map(Node node) {
