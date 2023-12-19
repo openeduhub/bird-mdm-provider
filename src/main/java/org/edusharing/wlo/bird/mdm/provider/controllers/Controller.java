@@ -17,7 +17,7 @@ import java.util.List;
 public class Controller {
 
     private final EduSharingService eduSharingService;
-    @GetMapping
+    @GetMapping(produces = "application/json; charset=UTF-8")
     public List<BirdDTO> get() throws ApiException {
         return eduSharingService.getCourses();
     }
