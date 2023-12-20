@@ -14,7 +14,7 @@ public record BirdDTO(
         @JsonProperty("course_language") I18N<List<CourseLanguage>> courseLanguage,
         @JsonProperty("course_lecture_type") I18N<List<CourseLectureType>> courseLectureType,
         @JsonProperty("course_serviceprovider_id") String serviceProviderId,
-        @JsonProperty("course_serviceprovider_name") I18N<String> serviceProviderName,
+        @JsonProperty("course_serviceprovider_name") I18N<List<String>> serviceProviderName,
         @JsonProperty("course_serviceprovider_url_image") I18N<String> serviceProviderUrlImage,
         @JsonProperty("course_serviceprovider_url_service") I18N<String> serviceProviderUrlService,
         @JsonProperty("course_targetgroup") I18N<List<CourseTarget>> courseTargetGroup,

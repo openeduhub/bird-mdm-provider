@@ -2,6 +2,7 @@ package org.edusharing.wlo.bird.mdm.provider.services;
 
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
+import ezvcard.io.chain.ChainingTextStringParser;
 import ezvcard.property.ListProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -160,11 +161,16 @@ public class EduSharingService {
 
 //                new I18N<>("WLO"),
                     properties.map(x -> x.get(CCM_LIFECYCLECONTRIBUTER_PUBLISHER))
-                            .flatMap(x -> x.stream().findFirst())
-                            .map(x -> Ezvcard.parse(x).first())
-                            .map(VCard::getOrganization)
-                            .map(ListProperty::getValues)
-                            .flatMap(x -> x.stream().findFirst())
+                            .map(x->x.stream()
+                                    .map(Ezvcard::parse)
+                                    .map(ChainingTextStringParser::all)
+                                    .flatMap(Collection::stream)
+                                    .map(VCard::getOrganization)
+                                    .filter(Objects::nonNull)
+                                    .map(ListProperty::getValues)
+                                    .flatMap(Collection::stream)
+                                    .filter(Objects::nonNull)
+                                    .toList())
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing ccm:lifecyclecontributer_publisher.ORG")),
 
@@ -247,6 +253,9 @@ public class EduSharingService {
             );
         } catch (NoSuchElementException ex) {
             log.warn("Node {} cause of: {}", node.getRef().getId(), ex.getMessage());
+            return null;
+        }catch (Exception ex){
+            log.error("Error on Node {} caused by: {}", node.getRef().getId(), ex.getMessage(), ex);
             return null;
         }
     }
