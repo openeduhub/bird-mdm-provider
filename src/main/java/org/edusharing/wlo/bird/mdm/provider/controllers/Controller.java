@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.edu_sharing.generated.repository.backend.services.rest.client.ApiException;
 import org.edusharing.wlo.bird.mdm.provider.models.BirdDTO;
 import org.edusharing.wlo.bird.mdm.provider.services.EduSharingService;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +24,12 @@ public class Controller {
     @DeleteMapping
     public void evictCaches(){
         eduSharingService.evictCache();
+    }
+
+    @ExceptionHandler({java.net.SocketTimeoutException.class})
+    public ResponseEntity<String> handleException(){
+        return ResponseEntity
+                .status(HttpStatus.REQUEST_TIMEOUT)
+                .body("Repository wasn't answering");
     }
 }
