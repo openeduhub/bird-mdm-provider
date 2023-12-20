@@ -26,8 +26,15 @@ public class Controller {
         eduSharingService.evictCache();
     }
 
+    @ExceptionHandler({ApiException.class})
+    public ResponseEntity<String> handleApiException(){
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ups something went wrong.");
+    }
+
     @ExceptionHandler({java.net.SocketTimeoutException.class})
-    public ResponseEntity<String> handleException(){
+    public ResponseEntity<String> handleSocketTimeoutException(){
         return ResponseEntity
                 .status(HttpStatus.REQUEST_TIMEOUT)
                 .body("Repository wasn't answering");
