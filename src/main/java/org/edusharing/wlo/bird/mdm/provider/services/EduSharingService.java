@@ -73,7 +73,6 @@ public class EduSharingService {
         return data;
     }
 
-    @Scheduled(fixedDelayString = "${application.cache.ttl}", initialDelayString = "${application.cache.ttl}", timeUnit = TimeUnit.SECONDS)
     @CacheEvict(value = CACHE_COURSES, allEntries = true)
     public void evictCache() {
         log.info("evict {} cache", CACHE_COURSES);
