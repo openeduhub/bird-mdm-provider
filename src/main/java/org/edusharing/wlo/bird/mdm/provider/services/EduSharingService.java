@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -159,6 +160,7 @@ public class EduSharingService {
                     node.getRef().getId(),
 
 //                new I18N<>("WLO"),
+
                     properties.map(x -> x.get(CCM_LIFECYCLECONTRIBUTER_PUBLISHER))
                             .map(x->x.stream()
                                     .map(Ezvcard::parse)
@@ -169,7 +171,7 @@ public class EduSharingService {
                                     .map(ListProperty::getValues)
                                     .flatMap(Collection::stream)
                                     .filter(Objects::nonNull)
-                                    .toList())
+                                    .collect(Collectors.joining("|")))
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing ccm:lifecyclecontributer_publisher.ORG")),
 
