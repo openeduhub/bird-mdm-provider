@@ -36,16 +36,24 @@ public class EduSharingService {
     private String collectionId;
 
 
+    public static final String CCLOM_TYPICALLEARNINGTIME = "cclom:typicallearningtime";
     public static final String CCM_PRICE = "ccm:price";
+    public static final String CCM_LEARNINGGOAL = "ccm:learninggoal";
     public static final String CCM_OEH_COURSE_COURSEMODE = "ccm:oeh_course_coursemode";
+    public static final String CCM_OEH_COURSE_SCHEDULE = "ccm:oeh_course_schedule";
+    public static final String CCM_OEH_COURSE_URL_VIDEO = "ccm:oeh_course_url_video";
     public static final String CCLOM_GENERAL_DESCRIPTION = "cclom:general_description";
     public static final String CCLOM_GENERAL_LANGUAGE = "cclom:general_language";
     public static final String CCLOM_LOCATION = "cclom:location";
     public static final String CCM_LIFECYCLECONTRIBUTER_PUBLISHER = "ccm:lifecyclecontributer_publisher";
 
     private static final List<String> properties = Arrays.asList(
+            CCLOM_TYPICALLEARNINGTIME,
+            CCM_LEARNINGGOAL,
             CCM_PRICE,
             CCM_OEH_COURSE_COURSEMODE,
+            CCM_OEH_COURSE_SCHEDULE,
+            CCM_OEH_COURSE_URL_VIDEO,
             CCLOM_GENERAL_DESCRIPTION,
             CCLOM_GENERAL_LANGUAGE,
             CCLOM_LOCATION,
@@ -121,9 +129,13 @@ public class EduSharingService {
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description (short)")),
 
-                    0L,
+                    properties.map(x -> x.get(CCLOM_TYPICALLEARNINGTIME))
+                            .flatMap(x -> x.stream().findFirst())
+                            .map(Long::parseLong)
+                            .map(x -> x / 1000 / 60 / 60)
+                            .orElse(null),
 
-                    new I18N<>(CourseTimeunit.MINUTE),
+                    new I18N<>(CourseTimeunit.HOUR),
 
                     properties.map(x -> x.get(CCLOM_GENERAL_LANGUAGE))
                             .map(x -> x.stream()
@@ -134,6 +146,11 @@ public class EduSharingService {
                             .map(x -> x.isEmpty() ? null : x)
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_language")),
+
+                    properties.map(x -> x.get(CCM_LEARNINGGOAL))
+                            .flatMap(x -> x.stream().findFirst())
+                            .map(I18N::new)
+                            .orElse(null),
 
 // Bad database for on OERSI so we use CourseLectureType.ONLINE_SELF_STUDY only
 //                properties.map(x -> x.get("ccm:oeh_course_lecture_type"))
@@ -157,6 +174,12 @@ public class EduSharingService {
 //                        .map(I18N::new)
 //                        .orElse(new I18N<>(Collections.singletonList(CourseLectureType.ONLINE_SELF_STUDY))),
                     new I18N<>(Collections.singletonList(CourseLectureType.ONLINE_SELF_STUDY)),
+
+                    properties.map(x -> x.get(CCM_OEH_COURSE_SCHEDULE))
+                            .flatMap(x -> x.stream().findFirst())
+                            .map(I18N::new)
+                            .orElse(null),
+
                     node.getRef().getId(),
 
 //                new I18N<>("WLO"),
@@ -250,7 +273,12 @@ public class EduSharingService {
 
 // Bad database of OERSI so we use null only
                     //new I18N<>(Optional.of(node).map(Node::getPreview).map(Preview::getUrl).orElse("tbd."))
-                    null
+                    null,
+
+                    properties.map(x -> x.get(CCM_OEH_COURSE_URL_VIDEO))
+                            .flatMap(x -> x.stream().findFirst())
+                            .map(I18N::new)
+                            .orElse(null)
             );
         } catch (NoSuchElementException ex) {
             log.warn("Node {} cause of: {}", node.getRef().getId(), ex.getMessage());
