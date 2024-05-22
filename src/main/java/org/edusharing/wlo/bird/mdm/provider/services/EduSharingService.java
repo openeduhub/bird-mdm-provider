@@ -36,28 +36,32 @@ public class EduSharingService {
     private String collectionId;
 
 
-    public static final String CCLOM_TYPICALLEARNINGTIME = "cclom:typicallearningtime";
-    public static final String CCM_PRICE = "ccm:price";
-    public static final String CCM_LEARNINGGOAL = "ccm:learninggoal";
-    public static final String CCM_OEH_COURSE_COURSEMODE = "ccm:oeh_course_coursemode";
-    public static final String CCM_OEH_COURSE_SCHEDULE = "ccm:oeh_course_schedule";
-    public static final String CCM_OEH_COURSE_URL_VIDEO = "ccm:oeh_course_url_video";
     public static final String CCLOM_GENERAL_DESCRIPTION = "cclom:general_description";
     public static final String CCLOM_GENERAL_LANGUAGE = "cclom:general_language";
     public static final String CCLOM_LOCATION = "cclom:location";
+    public static final String CCLOM_TYPICALLEARNINGTIME = "cclom:typicallearningtime";
+    public static final String CCM_LEARNINGGOAL = "ccm:learninggoal";
     public static final String CCM_LIFECYCLECONTRIBUTER_PUBLISHER = "ccm:lifecyclecontributer_publisher";
+    public static final String CCM_OEH_COURSE_COURSEMODE = "ccm:oeh_course_coursemode";
+    public static final String CCM_OEH_COURSE_DESCRIPTION_SHORT = "ccm:oeh_course_description_short";
+    public static final String CCM_OEH_COURSE_SCHEDULE = "ccm:oeh_course_schedule";
+    public static final String CCM_OEH_COURSE_URL_VIDEO = "ccm:oeh_course_url_video";
+    public static final String CCM_OEH_EVENT_BEGIN = "ccm:oeh_event_begin";
+    public static final String CCM_PRICE = "ccm:price";
 
     private static final List<String> properties = Arrays.asList(
-            CCLOM_TYPICALLEARNINGTIME,
-            CCM_LEARNINGGOAL,
-            CCM_PRICE,
-            CCM_OEH_COURSE_COURSEMODE,
-            CCM_OEH_COURSE_SCHEDULE,
-            CCM_OEH_COURSE_URL_VIDEO,
             CCLOM_GENERAL_DESCRIPTION,
             CCLOM_GENERAL_LANGUAGE,
             CCLOM_LOCATION,
-            CCM_LIFECYCLECONTRIBUTER_PUBLISHER
+            CCLOM_TYPICALLEARNINGTIME,
+            CCM_LEARNINGGOAL,
+            CCM_LIFECYCLECONTRIBUTER_PUBLISHER,
+            CCM_OEH_COURSE_COURSEMODE,
+            CCM_OEH_COURSE_DESCRIPTION_SHORT,
+            CCM_OEH_COURSE_SCHEDULE,
+            CCM_OEH_COURSE_URL_VIDEO,
+            CCM_OEH_EVENT_BEGIN,
+            CCM_PRICE
     );
 
     private static final String HTML_PATTERN = "<(\"[^\"]*\"|'[^']*'|[^'\">])*>";
@@ -91,6 +95,11 @@ public class EduSharingService {
         Optional<Map<String, List<String>>> properties = Optional.ofNullable(node.getProperties());
         try {
             return new BirdDTO(
+                    properties.map(x -> x.get(CCM_OEH_EVENT_BEGIN))
+                            .flatMap(x -> x.stream().findFirst())
+                            .map(I18N::new)
+                            .orElse(null),
+
                     properties.map(x -> x.get(CCM_PRICE)).flatMap(x -> x.stream().findFirst())
                             .filter(x -> x.equals("http://w3id.org/openeduhub/vocabs/price/no"))
                             .map(x -> CourseCharge.FREE)
@@ -129,11 +138,7 @@ public class EduSharingService {
                             .map(I18N::new)
                             .orElseThrow(() -> new NoSuchElementException("Missing cclom:general_description (short)")),
 
-                    properties.map(x -> x.get(CCLOM_TYPICALLEARNINGTIME))
-                            .flatMap(x -> x.stream().findFirst())
-                            .map(Long::parseLong)
-                            .map(x -> x / 1000 / 60 / 60)
-                            .orElse(null),
+                    0L,
 
                     new I18N<>(CourseTimeunit.HOUR),
 
@@ -277,6 +282,12 @@ public class EduSharingService {
 
                     properties.map(x -> x.get(CCM_OEH_COURSE_URL_VIDEO))
                             .flatMap(x -> x.stream().findFirst())
+                            .map(I18N::new)
+                            .orElse(null),
+
+                    properties.map(x -> x.get(CCLOM_TYPICALLEARNINGTIME))
+                            .flatMap(x -> x.stream().findFirst())
+                            .map(x -> (Long.parseLong(x) / 1000 / 60 / 60) + " " + CourseTimeunit.HOUR)
                             .map(I18N::new)
                             .orElse(null)
             );
