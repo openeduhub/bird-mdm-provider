@@ -46,7 +46,7 @@ public class EduSharingService {
     public static final String CCM_OEH_COURSE_DESCRIPTION_SHORT = "ccm:oeh_course_description_short";
     public static final String CCM_OEH_COURSE_SCHEDULE = "ccm:oeh_course_schedule";
     public static final String CCM_OEH_COURSE_URL_VIDEO = "ccm:oeh_course_url_video";
-    public static final String CCM_OEH_EVENT_BEGIN = "ccm:oeh_event_begin";
+    public static final String CCM_OEH_EVENT_BEGIN = "ccm:oeh_event_beginISO8601";
     public static final String CCM_PRICE = "ccm:price";
 
     private static final List<String> properties = Arrays.asList(
